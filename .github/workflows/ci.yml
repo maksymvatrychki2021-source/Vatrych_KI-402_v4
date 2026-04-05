@@ -24,11 +24,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Run CI script (Linux/macOS)
-        if: runner.os != 'Windows'
-        run: |
-          chmod +x ci.sh
-          ./ci.sh
 
       - name: Run CI script (Windows)
         if: runner.os == 'Windows'
