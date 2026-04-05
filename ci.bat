@@ -1,2 +1,7 @@
 @echo off
-echo Hello world
+mkdir build
+cd build
+cmake ..
+cmake --build .
+chmod +x .\* 
+ctest
