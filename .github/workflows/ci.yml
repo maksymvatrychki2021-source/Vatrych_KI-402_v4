@@ -38,10 +38,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Run CI script (Windows)
+      # --- Windows-only: Run ci.bat ---
       - name: Run CI script (Windows)
         if: runner.os == 'Windows'
-        run: ci.bat
+        shell: cmd
+        run: .\ci.bat
 
       # Deploy artifact
       - name: Deploy (artifact)
