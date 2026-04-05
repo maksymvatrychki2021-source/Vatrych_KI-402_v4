@@ -1,26 +1,45 @@
-# CMakeLists.txt for a simple C++ project
+cmake_minimum_required(VERSION 3.21)
+project(MyProject LANGUAGES CXX)
 
-cmake_minimum_required(VERSION 3.10)
-project(MyProject)
 set(CMAKE_CXX_STANDARD 11)
 
-# Add the main executable
+# --- Встановлюємо однакову Runtime Library для MSVC ---
+if(MSVC)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDebugDLL") # MDd для Debug
+endif()
+
+# --- Основна бібліотека з функціями ---
+add_library(MyLibrary
+    add.cpp       # Реалізація функцій
+    # Додати інші .cpp файли за потреби
+)
+target_include_directories(MyLibrary PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+# --- Головний виконуваний файл ---
 add_executable(MyExecutable main.cpp)
+target_link_libraries(MyExecutable PRIVATE MyLibrary)
 
-# Enable testing
-enable_testing()
-
-# Include Google Test
+# --- GoogleTest через FetchContent ---
 include(FetchContent)
+
 FetchContent_Declare(
     googletest
-    URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+    URL https://github.com/google/googletest/archive/release-1.14.0.zip
 )
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-# Add test executable
-add_executable(unit_tests tests/unit_tests.cpp)
-target_link_libraries(unit_tests gtest gtest_main)
+enable_testing()
 
-# Register tests
+# --- Unit Tests ---
+add_executable(unit_tests
+    tests/unit_tests.cpp
+    add.cpp  # Підключаємо реалізацію функцій до тестів
+)
+target_link_libraries(unit_tests
+    PRIVATE
+    MyLibrary
+    gtest_main
+)
+
 add_test(NAME unit_tests COMMAND unit_tests)
