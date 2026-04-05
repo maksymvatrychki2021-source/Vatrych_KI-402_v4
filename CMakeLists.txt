@@ -3,23 +3,18 @@ project(MyProject LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 
-# --- Встановлюємо однакову Runtime Library для MSVC ---
 if(MSVC)
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDebugDLL") # MDd для Debug
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDebugDLL") 
 endif()
 
-# --- Основна бібліотека з функціями ---
 add_library(MyLibrary
-    add.cpp       # Реалізація функцій
-    # Додати інші .cpp файли за потреби
+    add.cpp      
 )
 target_include_directories(MyLibrary PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-# --- Головний виконуваний файл ---
 add_executable(MyExecutable main.cpp)
 target_link_libraries(MyExecutable PRIVATE MyLibrary)
 
-# --- GoogleTest через FetchContent ---
 include(FetchContent)
 
 FetchContent_Declare(
@@ -31,10 +26,9 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-# --- Unit Tests ---
 add_executable(unit_tests
     tests/unit_tests.cpp
-    add.cpp  # Підключаємо реалізацію функцій до тестів
+    add.cpp  
 )
 target_link_libraries(unit_tests
     PRIVATE
