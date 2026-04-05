@@ -21,7 +21,6 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      # --- Windows-only: fix invalid file paths ---
       - name: Fix invalid Windows paths
         if: runner.os == 'Windows'
         run: |
@@ -34,17 +33,14 @@ jobs:
           fi
         shell: bash
 
-      # Checkout repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # --- Windows-only: Run ci.bat ---
       - name: Run CI script (Windows)
         if: runner.os == 'Windows'
         shell: cmd
         run: .\ci.bat
 
-      # Deploy artifact
       - name: Deploy (artifact)
         uses: actions/upload-artifact@v4
         with:
