@@ -21,13 +21,26 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+      - name: Fix invalid Windows paths
+        if: runner.os == 'Windows'
+        run: |
+          git config --global core.protectNTFS false
+          if git ls-files --error-unmatch "tests /unit_tests.cpp" > /dev/null 2>&1; then
+            git mv "tests /unit_tests.cpp" "tests/unit_tests.cpp"
+            echo "Renamed invalid file for Windows"
+          else
+            echo "No invalid files found"
+          fi
+        shell: bash
+
       - name: Checkout code
         uses: actions/checkout@v4
 
 
       - name: Run CI script (Windows)
         if: runner.os == 'Windows'
-        run: ci.bat
+        shell: cmd
+        run: .\ci.bat
 
       - name: Deploy (artifact)
         uses: actions/upload-artifact@v4
